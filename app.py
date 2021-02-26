@@ -48,7 +48,7 @@ def create():
         # TODO: Make an `insert_one` database call to insert the object into the
         # database's `plants` collection, and get its inserted id. Pass the 
         # inserted id into the redirect call below.
-        insert = mongo.db.plants.insert_one(new_plant)
+        insert = mongo.db.plants.insert_one(new_plant).inserted_id
 
         return redirect(url_for('detail', plant_id=insert))
 
@@ -101,12 +101,12 @@ def edit(plant_id):
     if request.method == 'POST':
         # TODO: Make an `update_one` database call to update the plant with the
         # given id. Make sure to put the updated fields in the `$set` object.
-        mongo.db.plants.update_one('$set':{
+        mongo.db.plants.update_one({'$set':{
             'name': request.form.get('plant_name'),
             'variety': request.form.get('variety'),
             'photo_url': request.form.get('photo'),
             'date_planted': request.form.get('date_planted')
-        })
+        }})
         
         return redirect(url_for('detail', plant_id=plant_id))
     else:
