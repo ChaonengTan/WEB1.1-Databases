@@ -10,8 +10,6 @@ app = Flask(__name__)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/plantsDatabase"
 mongo = PyMongo(app)
-mongo.db.plants.drop()
-mongo.db.harvests.drop()
 
 ############################################################
 # ROUTES
@@ -70,7 +68,7 @@ def detail(plant_id):
     # plant's id.
     # HINT: This query should be on the `harvests` collection, not the `plants`
     # collection.
-    harvests = mongo.db.harvests.find({'name':plant_id})
+    harvests = mongo.db.harvests.find({'plant_id':plant_id})
 
     context = {
         'plant' : plant_to_show,
