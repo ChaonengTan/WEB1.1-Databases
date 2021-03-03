@@ -10,6 +10,8 @@ app = Flask(__name__)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/plantsDatabase"
 mongo = PyMongo(app)
+mongo.db.plants.drop()
+mongo.db.harvests.drop()
 
 ############################################################
 # ROUTES
@@ -48,8 +50,9 @@ def create():
         # TODO: Make an `insert_one` database call to insert the object into the
         # database's `plants` collection, and get its inserted id. Pass the 
         # inserted id into the redirect call below.
-        insert = mongo.db.plants.insert_one(new_plant).inserted_id
-
+        mongo.db.plants.insert_one(new_plant)
+        insert = new_plant['name']
+                    
         return redirect(url_for('detail', plant_id=insert))
 
     else:
@@ -61,13 +64,13 @@ def detail(plant_id):
 
     # TODO: Replace the following line with a database call to retrieve *one*
     # plant from the database, whose id matches the id passed in via the URL.
-    plant_to_show = mongo.db.plants.find(plant_id)
+    plant_to_show = mongo.db.plants.find_one({'name':plant_id})
 
     # TODO: Use the `find` database operation to find all harvests for the
     # plant's id.
     # HINT: This query should be on the `harvests` collection, not the `plants`
     # collection.
-    harvests = mongo.db.harvests.find(plant_id)
+    harvests = mongo.db.harvests.find({'name':plant_id})
 
     context = {
         'plant' : plant_to_show,
@@ -112,7 +115,7 @@ def edit(plant_id):
     else:
         # TODO: Make a `find_one` database call to get the plant object with the
         # passed-in _id.
-        plant_to_show = mongio.db.plants.find_one(plant_id)
+        plant_to_show = mongo.db.plants.find_one(plant_id)
 
         context = {
             'plant': plant_to_show
